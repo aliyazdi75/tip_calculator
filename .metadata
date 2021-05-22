@@ -1,0 +1,10 @@
+# This file tracks properties of this Flutter project.
+# Used by Flutter tool to assess capabilities and perform upgrades etc.
+#
+# This file should be version controlled and should not be manually edited.
+
+version:
+  revision: ff871be9e89880191bb52d1578cfd72328dee16d
+  channel: fix_scrollbar
+
+project_type: app
