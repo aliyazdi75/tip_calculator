@@ -43,7 +43,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   late final TextEditingController textEditingController;
 
-  double _tipPercentage = 0;
+  double _tipPercentage = 15;
   double _currentTip = 0;
   double _totalTip = 0;
 
