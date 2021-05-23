@@ -19,48 +19,36 @@ class MyApp extends StatelessWidget {
           activeTrackColor: Colors.transparent,
           inactiveTrackColor: Colors.transparent,
           thumbColor: const Color(0xFF8DA2F5),
-          thumbShape: const RoundSliderThumbShape(
-            enabledThumbRadius: 10,
-          ),
+          thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10),
           valueIndicatorColor: Colors.transparent,
-          overlayColor: Colors.black.withOpacity(.1),
+          overlayColor: Colors.black.withOpacity(0.1),
         ),
       ),
-      home: const MyHomePage(title: 'Flutter Tip Calculator'),
+      home: const HomePage(title: 'Flutter Tip Calculator'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late final TextEditingController textEditingController;
 
   double _tipPercentage = 15;
   double _currentTip = 0;
-  double _totalTip = 0;
+  double _totalBill = 0;
 
   @override
   void initState() {
     super.initState();
     textEditingController = TextEditingController();
-    textEditingController.addListener(() {
-      setState(() {
-        _calculateTip(
-          _tipPercentage,
-          textEditingController.value.text.length < 1
-              ? 0
-              : double.parse(textEditingController.value.text),
-        );
-      });
-    });
   }
 
   @override
@@ -69,10 +57,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     textEditingController.dispose();
   }
 
-  Future<void> _calculateTip(double percentage, double total) async {
-    final totalTipValue = (total / 100) * percentage;
-    _currentTip = totalTipValue;
-    _totalTip = total + totalTipValue;
+  Future<void> _calculateTip(double tipPercentage, double bill) async {
+    setState(() {
+      _currentTip = (bill / 100) * tipPercentage;
+      _totalBill = bill + _currentTip;
+    });
   }
 
   @override
@@ -97,13 +86,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
           Column(
             children: <Widget>[
-              Container(
-                margin: const EdgeInsets.only(top: 10),
-                child: const Text(
-                  'Tip Calculator',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 36,
+              SafeArea(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: const Text(
+                    'Tip Calculator',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 36,
+                    ),
                   ),
                 ),
               ),
@@ -170,6 +161,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                     filled: true,
                                     fillColor: Color(0xFF6E8FFF),
                                   ),
+                                  onChanged: (bill) {
+                                    _calculateTip(
+                                      _tipPercentage,
+                                      bill.length < 1 ? 0 : double.parse(bill),
+                                    );
+                                  },
                                 ),
                               ),
                             )
@@ -238,15 +235,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                               onChanged: (v) {
                                 setState(() {
                                   _tipPercentage = v;
-                                  _calculateTip(
-                                    _tipPercentage,
-                                    textEditingController.value.text.length < 1
-                                        ? 0
-                                        : double.parse(
-                                            textEditingController.value.text,
-                                          ),
-                                  );
                                 });
+                                _calculateTip(
+                                  _tipPercentage,
+                                  textEditingController.value.text.length < 1
+                                      ? 0
+                                      : double.parse(
+                                          textEditingController.value.text,
+                                        ),
+                                );
                               },
                             ),
                           ],
@@ -307,7 +304,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                             Padding(
                               padding: const EdgeInsets.only(right: 8.0),
                               child: Text(
-                                '\$${_totalTip.toStringAsFixed(2)}',
+                                '\$${_totalBill.toStringAsFixed(2)}',
                                 style: const TextStyle(
                                   color: Color(0xFF6E8FFF),
                                   fontSize: 20,
